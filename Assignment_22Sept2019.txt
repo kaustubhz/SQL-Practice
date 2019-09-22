@@ -1,0 +1,407 @@
+1. See table structure of employee and department table.
+
+mysql> desc emp;
++----------+--------------+------+-----+---------+-------+
+| Field    | Type         | Null | Key | Default | Extra |
++----------+--------------+------+-----+---------+-------+
+| EMPNO    | int(4)       | NO   |     | NULL    |       |
+| ENAME    | varchar(10)  | YES  |     | NULL    |       |
+| JOB      | varchar(9)   | YES  |     | NULL    |       |
+| MGR      | int(4)       | YES  |     | NULL    |       |
+| HIREDATE | date         | YES  |     | NULL    |       |
+| SAL      | decimal(7,2) | YES  |     | NULL    |       |
+| COMM     | decimal(7,2) | YES  |     | NULL    |       |
+| DEPTNO   | int(2)       | YES  |     | NULL    |       |
++----------+--------------+------+-----+---------+-------+
+8 rows in set (0.00 sec)
+
+mysql> desc dept;
++--------+-------------+------+-----+---------+-------+
+| Field  | Type        | Null | Key | Default | Extra |
++--------+-------------+------+-----+---------+-------+
+| DEPTNO | int(2)      | YES  |     | NULL    |       |
+| DNAME  | varchar(14) | YES  |     | NULL    |       |
+| LOC    | varchar(13) | YES  |     | NULL    |       |
++--------+-------------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+
+2. Query employee number,name and salary of every employee.
+
+mysql> SELECT empno as "Employee number",ename as "Employee Name",sal as "Salary"
+    -> FROM emp;
++-----------------+---------------+---------+
+| Employee number | Employee Name | Salary  |
++-----------------+---------------+---------+
+|            7369 | SMITH         |  800.00 |
+|            7499 | ALLEN         | 1600.00 |
+|            7521 | WARD          | 1250.00 |
+|            7566 | JONES         | 2975.00 |
+|            7654 | MARTIN        | 1250.00 |
+|            7698 | BLAKE         | 2850.00 |
+|            7782 | CLARK         | 2450.00 |
+|            7788 | SCOTT         | 3000.00 |
+|            7839 | KING          | 5000.00 |
+|            7844 | TURNER        | 1500.00 |
+|            7876 | ADAMS         | 1100.00 |
+|            7900 | JAMES         |  950.00 |
+|            7902 | FORD          | 3000.00 |
+|            7934 | MILLER        | 1300.00 |
++-----------------+---------------+---------+
+14 rows in set (0.00 sec)
+
+3. Retrieve details of every employee.
+
+mysql> SELECT *                                                                                                                                                                                                                                  -> FROM emp;                                                                                                                                                                                                                             +-------+--------+-----------+------+------------+---------+---------+--------+                                                                                                                                                              | EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL     | COMM    | DEPTNO |                                                                                                                                                              +-------+--------+-----------+------+------------+---------+---------+--------+                                                                                                                                                              |  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  800.00 |    NULL |     20 |                                                                                                                                                              |  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 | 1600.00 |  300.00 |     30 |                                                                                                                                                              |  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 | 1250.00 |  500.00 |     30 |                                                                                                                                                              |  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 2975.00 |    NULL |     20 |                                                                                                                                                              |  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 | 1250.00 | 1400.00 |     30 |                                                                                                                                                              |  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 | 2850.00 |    NULL |     30 |                                                                                                                                                              |  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 | 2450.00 |    NULL |     10 |                                                                                                                                                              |  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 | 3000.00 |    NULL |     20 |                                                                                                                                                              |  7839 | KING   | PRESIDENT | NULL | 1981-11-17 | 5000.00 |    NULL |     10 |                                                                                                                                                              |  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 | 1500.00 |    0.00 |     30 |                                                                                                                                                              |  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 | 1100.00 |    NULL |     20 |                                                                                                                                                              |  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |  950.00 |    NULL |     30 |                                                                                                                                                              |  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 | 3000.00 |    NULL |     20 |                                                                                                                                                              |  7934 | MILLER | CLERK     | 7782 | 1982-01-23 | 1300.00 |    NULL |     10 |                                                                                                                                                              +-------+--------+-----------+------+------------+---------+---------+--------+                                                                                                                                                              14 rows in set (0.00 sec)mysql> SELECT *
+    -> FROM emp;
++-------+--------+-----------+------+------------+---------+---------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL     | COMM    | DEPTNO |
++-------+--------+-----------+------+------------+---------+---------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  800.00 |    NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 | 1600.00 |  300.00 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 | 1250.00 |  500.00 |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 2975.00 |    NULL |     20 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 | 1250.00 | 1400.00 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 | 2850.00 |    NULL |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 | 2450.00 |    NULL |     10 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 | 3000.00 |    NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 | 5000.00 |    NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 | 1500.00 |    0.00 |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 | 1100.00 |    NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |  950.00 |    NULL |     30 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 | 3000.00 |    NULL |     20 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 | 1300.00 |    NULL |     10 |
++-------+--------+-----------+------+------------+---------+---------+--------+
+14 rows in set (0.00 sec)
+
+4. Display employee number, name of employee, salary and DA for every employee. DA= sal*20
+
+mysql> SELECT empno AS "Employee Number",ename AS "Employee Name", sal AS "Salary", sal*20 AS "DA"
+    -> FROM emp;
++-----------------+---------------+---------+-----------+
+| Employee Number | Employee Name | Salary  | DA        |
++-----------------+---------------+---------+-----------+
+|            7369 | SMITH         |  800.00 |  16000.00 |
+|            7499 | ALLEN         | 1600.00 |  32000.00 |
+|            7521 | WARD          | 1250.00 |  25000.00 |
+|            7566 | JONES         | 2975.00 |  59500.00 |
+|            7654 | MARTIN        | 1250.00 |  25000.00 |
+|            7698 | BLAKE         | 2850.00 |  57000.00 |
+|            7782 | CLARK         | 2450.00 |  49000.00 |
+|            7788 | SCOTT         | 3000.00 |  60000.00 |
+|            7839 | KING          | 5000.00 | 100000.00 |
+|            7844 | TURNER        | 1500.00 |  30000.00 |
+|            7876 | ADAMS         | 1100.00 |  22000.00 |
+|            7900 | JAMES         |  950.00 |  19000.00 |
+|            7902 | FORD          | 3000.00 |  60000.00 |
+|            7934 | MILLER        | 1300.00 |  26000.00 |
++-----------------+---------------+---------+-----------+
+14 rows in set (0.00 sec)
+
+
+5. Display employee number,employee name,hiredate, commission of all employees and heading for the columns would be
+	Emp#,Employee Name, Date of Join, Commission
+	
+	
+mysql> SELECT empno AS "Emp#",ename AS "Employee Name",hiredate as "Date of Join",comm as "Commission"
+    -> FROM emp;
++------+---------------+--------------+------------+
+| Emp# | Employee Name | Date of Join | Commission |
++------+---------------+--------------+------------+
+| 7369 | SMITH         | 1980-12-17   |       NULL |
+| 7499 | ALLEN         | 1981-02-20   |     300.00 |
+| 7521 | WARD          | 1981-02-22   |     500.00 |
+| 7566 | JONES         | 1981-04-02   |       NULL |
+| 7654 | MARTIN        | 1981-09-28   |    1400.00 |
+| 7698 | BLAKE         | 1981-05-01   |       NULL |
+| 7782 | CLARK         | 1981-06-09   |       NULL |
+| 7788 | SCOTT         | 1982-12-09   |       NULL |
+| 7839 | KING          | 1981-11-17   |       NULL |
+| 7844 | TURNER        | 1981-09-08   |       0.00 |
+| 7876 | ADAMS         | 1983-01-12   |       NULL |
+| 7900 | JAMES         | 1981-12-03   |       NULL |
+| 7902 | FORD          | 1981-12-03   |       NULL |
+| 7934 | MILLER        | 1982-01-23   |       NULL |
++------+---------------+--------------+------------+
+14 rows in set (0.00 sec)
+
+
+6. Create a query to display unique department number from employee
+
+mysql> SELECT DISTINCT DEPTNO
+    -> FROM emp;
++--------+
+| DEPTNO |
++--------+
+|     20 |
+|     30 |
+|     10 |
++--------+
+3 rows in set (0.00 sec)
+
+7.Display name concatenated with salary seperated by comma and space and the name the column as Employee Salary.
+
+
+mysql> SELECT CONCAT(ename," , ",sal) AS "Employee Salary"
+    -> FROM emp;
++------------------+
+| Employee Salary  |
++------------------+
+| SMITH , 800.00   |
+| ALLEN , 1600.00  |
+| WARD , 1250.00   |
+| JONES , 2975.00  |
+| MARTIN , 1250.00 |
+| BLAKE , 2850.00  |
+| CLARK , 2450.00  |
+| SCOTT , 3000.00  |
+| KING , 5000.00   |
+| TURNER , 1500.00 |
+| ADAMS , 1100.00  |
+| JAMES , 950.00   |
+| FORD , 3000.00   |
+| MILLER , 1300.00 |
++------------------+
+14 rows in set (0.00 sec)
+
+
+8. Display the o/p as follows:
+	Blake Works As MANAGER In Department 30.
+	
+mysql> SELECT CONCAT(ename," WORKS AS ",job," In Department ",deptno) AS "Employee Description"
+    -> FROM emp;
++-------------------------------------------+
+| Employee Description                      |
++-------------------------------------------+
+| SMITH WORKS AS CLERK In Department 20     |
+| ALLEN WORKS AS SALESMAN In Department 30  |
+| WARD WORKS AS SALESMAN In Department 30   |
+| JONES WORKS AS MANAGER In Department 20   |
+| MARTIN WORKS AS SALESMAN In Department 30 |
+| BLAKE WORKS AS MANAGER In Department 30   |
+| CLARK WORKS AS MANAGER In Department 10   |
+| SCOTT WORKS AS ANALYST In Department 20   |
+| KING WORKS AS PRESIDENT In Department 10  |
+| TURNER WORKS AS SALESMAN In Department 30 |
+| ADAMS WORKS AS CLERK In Department 20     |
+| JAMES WORKS AS CLERK In Department 30     |
+| FORD WORKS AS ANALYST In Department 20    |
+| MILLER WORKS AS CLERK In Department 10    |
++-------------------------------------------+
+14 rows in set (0.00 sec)
+
+
+9.Create a query which display all employee data those who is earning more than 2000.
+
+mysql> SELECT*
+    -> FROM emp
+    -> WHERE sal>2000;
++-------+-------+-----------+------+------------+---------+------+--------+
+| EMPNO | ENAME | JOB       | MGR  | HIREDATE   | SAL     | COMM | DEPTNO |
++-------+-------+-----------+------+------------+---------+------+--------+
+|  7566 | JONES | MANAGER   | 7839 | 1981-04-02 | 2975.00 | NULL |     20 |
+|  7698 | BLAKE | MANAGER   | 7839 | 1981-05-01 | 2850.00 | NULL |     30 |
+|  7782 | CLARK | MANAGER   | 7839 | 1981-06-09 | 2450.00 | NULL |     10 |
+|  7788 | SCOTT | ANALYST   | 7566 | 1982-12-09 | 3000.00 | NULL |     20 |
+|  7839 | KING  | PRESIDENT | NULL | 1981-11-17 | 5000.00 | NULL |     10 |
+|  7902 | FORD  | ANALYST   | 7566 | 1981-12-03 | 3000.00 | NULL |     20 |
++-------+-------+-----------+------+------------+---------+------+--------+
+6 rows in set (0.00 sec)
+
+
+
+
+10. Create a query which display name, salary, date of join and job of all employees who works as 'Clerk'.
+
+mysql> SELECT ename AS "Employee Name",
+    -> sal AS "Salary",
+    -> hiredate AS "Date of Join",
+    -> job AS "JOB"
+    -> FROM emp
+    -> WHERE
+    -> job='clerk';
++---------------+---------+--------------+-------+
+| Employee Name | Salary  | Date of Join | JOB   |
++---------------+---------+--------------+-------+
+| SMITH         |  800.00 | 1980-12-17   | CLERK |
+| ADAMS         | 1100.00 | 1983-01-12   | CLERK |
+| JAMES         |  950.00 | 1981-12-03   | CLERK |
+| MILLER        | 1300.00 | 1982-01-23   | CLERK |
++---------------+---------+--------------+-------+
+4 rows in set (0.00 sec)
+
+11. Query to display employee details of people getting salary between 2000 and 4000.
+
+
+
+mysql> SELECT *
+    -> FROM emp
+    -> WHERE
+    -> sal BETWEEN 2000 AND 4000;
++-------+-------+---------+------+------------+---------+------+--------+
+| EMPNO | ENAME | JOB     | MGR  | HIREDATE   | SAL     | COMM | DEPTNO |
++-------+-------+---------+------+------------+---------+------+--------+
+|  7566 | JONES | MANAGER | 7839 | 1981-04-02 | 2975.00 | NULL |     20 |
+|  7698 | BLAKE | MANAGER | 7839 | 1981-05-01 | 2850.00 | NULL |     30 |
+|  7782 | CLARK | MANAGER | 7839 | 1981-06-09 | 2450.00 | NULL |     10 |
+|  7788 | SCOTT | ANALYST | 7566 | 1982-12-09 | 3000.00 | NULL |     20 |
+|  7902 | FORD  | ANALYST | 7566 | 1981-12-03 | 3000.00 | NULL |     20 |
++-------+-------+---------+------+------------+---------+------+--------+
+5 rows in set (0.00 sec)
+
+12. WAQ which will display employee name,job and hiredate of all employees who have been hired between April 1, 1981 and March 31, 1982
+mysql> SELECT
+    -> ename AS "Employee Name",
+    -> job AS "Job",
+    -> hiredate AS "Date of Join"
+    -> FROM
+    -> emp
+    -> WHERE
+    -> hiredate
+    -> BETWEEN '1981-04-01' AND '1982-03-31';
++---------------+-----------+--------------+
+| Employee Name | Job       | Date of Join |
++---------------+-----------+--------------+
+| JONES         | MANAGER   | 1981-04-02   |
+| MARTIN        | SALESMAN  | 1981-09-28   |
+| BLAKE         | MANAGER   | 1981-05-01   |
+| CLARK         | MANAGER   | 1981-06-09   |
+| KING          | PRESIDENT | 1981-11-17   |
+| TURNER        | SALESMAN  | 1981-09-08   |
+| JAMES         | CLERK     | 1981-12-03   |
+| FORD          | ANALYST   | 1981-12-03   |
+| MILLER        | CLERK     | 1982-01-23   |
++---------------+-----------+--------------+
+9 rows in set (0.00 sec)
+
+13. WAQ which will display employee name,department number of all employees who works in department 10 and 30
+
+
+mysql> SELECT ename AS "Employee Name", deptno AS "Department Number"
+    -> FROM emp
+    -> WHERE deptno in (10,30);
++---------------+-------------------+
+| Employee Name | Department Number |
++---------------+-------------------+
+| ALLEN         |                30 |
+| WARD          |                30 |
+| MARTIN        |                30 |
+| BLAKE         |                30 |
+| CLARK         |                10 |
+| KING          |                10 |
+| TURNER        |                30 |
+| JAMES         |                30 |
+| MILLER        |                10 |
++---------------+-------------------+
+9 rows in set (0.00 sec)
+
+14.Display name and job of all employees who do not have manager
+
+mysql> SELECT
+    -> ename AS "Employee Name",
+    -> job AS "Job"
+    -> FROM
+    -> emp
+    -> WHERE
+    -> mgr IS NULL;
++---------------+-----------+
+| Employee Name | Job       |
++---------------+-----------+
+| KING          | PRESIDENT |
++---------------+-----------+
+1 row in set (0.00 sec)
+
+15. Display all employee name whose name starts with 's'
+
+
+mysql> SELECT
+    -> ename AS "Employee Name"
+    -> FROM emp
+    -> WHERE
+    -> ename LIKE 'S%';
++---------------+
+| Employee Name |
++---------------+
+| SMITH         |
+| SCOTT         |
++---------------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT
+    -> ename AS "Employee Name"
+    -> FROM emp
+    -> WHERE
+    -> ename REGEXP '^S';
++---------------+
+| Employee Name |
++---------------+
+| SMITH         |
+| SCOTT         |
++---------------+
+2 rows in set (0.00 sec)
+
+16.Display name,job,salary of all employees whose job is manager or analyst and ther salary is not equall to 1000,3000 or 5000.
+
+mysql> SELECT
+    -> ename AS "Employee Name",
+    -> job AS "Job",
+    -> sal AS "Salary"
+    -> FROM
+    -> emp
+    -> WHERE
+    -> job IN ('manager','analyst')
+    -> AND
+    -> sal NOT In (1000,3000,5000);
++---------------+---------+---------+
+| Employee Name | Job     | Salary  |
++---------------+---------+---------+
+| JONES         | MANAGER | 2975.00 |
+| BLAKE         | MANAGER | 2850.00 |
+| CLARK         | MANAGER | 2450.00 |
++---------------+---------+---------+
+3 rows in set (0.00 sec)
+
+17.Display name and salary of all employees who earns commission more than 75% of their salary.
+
+
+mysql> SELECT ename AS "Employee Name",
+    -> sal AS "Salary"
+    -> FROM emp
+    -> WHERE
+    -> comm>sal*0.75;
++---------------+---------+
+| Employee Name | Salary  |
++---------------+---------+
+| MARTIN        | 1250.00 |
++---------------+---------+
+1 row in set (0.00 sec)
+
+
+
+18.Display employee number,salary, salary increased by 15% express as whole number. Label the column as new salary.
+
+mysql> SELECT
+    -> empno AS "Employee Number",
+    -> sal AS "Employee Salary",
+    -> sal*1.15 AS "New Salary"
+    -> FROM
+    -> emp;
++-----------------+-----------------+------------+
+| Employee Number | Employee Salary | New Salary |
++-----------------+-----------------+------------+
+|            7369 |          800.00 |   920.0000 |
+|            7499 |         1600.00 |  1840.0000 |
+|            7521 |         1250.00 |  1437.5000 |
+|            7566 |         2975.00 |  3421.2500 |
+|            7654 |         1250.00 |  1437.5000 |
+|            7698 |         2850.00 |  3277.5000 |
+|            7782 |         2450.00 |  2817.5000 |
+|            7788 |         3000.00 |  3450.0000 |
+|            7839 |         5000.00 |  5750.0000 |
+|            7844 |         1500.00 |  1725.0000 |
+|            7876 |         1100.00 |  1265.0000 |
+|            7900 |          950.00 |  1092.5000 |
+|            7902 |         3000.00 |  3450.0000 |
+|            7934 |         1300.00 |  1495.0000 |
++-----------------+-----------------+------------+
+14 rows in set (0.00 sec)
