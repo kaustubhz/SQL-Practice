@@ -1,0 +1,493 @@
+26. Write a query in SQL to list the employee name, and job_name who are not working under a 
+	manager. 
+	
+	mysql> SELECT ename 'Employee',job 'Job_Name'
+    -> FROM emp
+    -> WHERE mgr is NULL;
++----------+-----------+
+| Employee | Job_Name  |
++----------+-----------+
+| KING     | PRESIDENT |
++----------+-----------+
+1 row in set (0.00 sec)
+
+
+27. Write a query in SQL to list all the employees joined on 1st may 81. 
+mysql> SELECT ename 'Employees',date_format(hiredate,'%D %M ,%y') 'Joining Date'
+    -> From emp
+    -> WHERE
+    -> hiredate=str_to_date('1st May 81','%D %M %y');
++-----------+--------------+
+| Employees | Joining Date |
++-----------+--------------+
+| BLAKE     | 1st May ,81  |
++-----------+--------------+
+1 row in set (0.00 sec)
+
+28. Write a query in SQL to list the id, name, salary, and experiences of all the employees 
+	working for the manger 7839. 
+	
+	mysql> SELECT empno "Employee Id",ename "Employee Name",sal 'Salary',
+    -> EXTRACT(year from curdate())-EXTRACT(year from hiredate) 'Experience',
+    -> mgr 'Manager'
+    -> FROM emp
+    -> WHERE mgr=7839;
++-------------+---------------+---------+------------+---------+
+| Employee Id | Employee Name | Salary  | Experience | Manager |
++-------------+---------------+---------+------------+---------+
+|        7566 | JONES         | 2975.00 |         38 |    7839 |
+|        7698 | BLAKE         | 2850.00 |         38 |    7839 |
+|        7782 | CLARK         | 2450.00 |         38 |    7839 |
++-------------+---------------+---------+------------+---------+
+3 rows in set (0.00 sec)
+
+	
+29. Write a query in SQL to list the id, name, salary, and experience of all the employees who
+	earn more than 100 as daily salary. 
+	
+	mysql> SELECT
+    -> empno 'ID',
+    -> ename 'Employee name',
+    -> sal 'Salary',
+    -> year(curdate())-year(hiredate) 'Experience (In years)'
+    -> FROM
+    -> emp
+    -> WHERE
+    -> round((sal/30),2)>100;
++------+---------------+---------+-----------------------+
+| ID   | Employee name | Salary  | Experience (In years) |
++------+---------------+---------+-----------------------+
+| 7839 | KING          | 5000.00 |                    38 |
++------+---------------+---------+-----------------------+
+1 row in set (0.00 sec)
+	
+30. Write a query in SQL to list the employees who are retiring after 31-Dec-89 after 
+	completion of 8 years of service period. 
+	
+	mysql> SELECT ename 'Employees to retire',
+    -> FLOOR(DATEDIFF(STR_TO_DATE('31-Dec-89','%d-%M-%y'),hiredate)/365) "Service Duration"
+    -> FROM emp
+    -> WHERE
+    -> DATEDIFF(STR_TO_DATE('31-Dec-89','%d-%M-%y'),hiredate)/365 >=8;
++---------------------+------------------+
+| Employees to retire | Service Duration |
++---------------------+------------------+
+| SMITH               |                9 |
+| ALLEN               |                8 |
+| WARD                |                8 |
+| JONES               |                8 |
+| MARTIN              |                8 |
+| BLAKE               |                8 |
+| CLARK               |                8 |
+| KING                |                8 |
+| TURNER              |                8 |
+| JAMES               |                8 |
+| FORD                |                8 |
++---------------------+------------------+
+11 rows in set (0.00 sec)
+	
+31. Write a query in SQL to list those employees whose salary is an odd value.\
+mysql> SELECT
+    -> ename 'Employees',
+    -> sal 'Salary (in odd digits)'
+    -> FROM
+    -> emp
+    -> WHERE
+    -> mod(sal,2)=1;
++-----------+------------------------+
+| Employees | Salary (in odd digits) |
++-----------+------------------------+
+| JONES     |                2975.00 |
++-----------+------------------------+
+1 row in set (0.00 sec) 
+32. Write a query in SQL to list those employees whose salary contain only 3 digits. 
+
+mysql> SELECT ename "Employee Name",FLOOR(sal) "Salary in 3 digits"
+    -> FROM emp
+    -> WHERE LENGTH(FLOOR(sal))=3;
++---------------+--------------------+
+| Employee Name | Salary in 3 digits |
++---------------+--------------------+
+| SMITH         |                800 |
+| JAMES         |                950 |
++---------------+--------------------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT
+    -> ename 'Employee Name',
+    -> truncate(sal,0) 'Salary in 3 digits'
+    -> FROM
+    -> emp
+    -> WHERE
+    -> LENGTH(truncate(sal,0))=3;
++---------------+--------------------+
+| Employee Name | Salary in 3 digits |
++---------------+--------------------+
+| SMITH         |                800 |
+| JAMES         |                950 |
++---------------+--------------------+
+2 rows in set (0.00 sec)	
+
+
+33. Write a query in SQL to list the employees who joined in the month of APRIL. 
+
+mysql> SELECT
+    -> ename 'Employees',
+    -> MONTHNAME(hiredate) 'Month of joining'
+    -> FROM
+    -> emp
+    -> WHERE
+    -> MONTHNAME(hiredate)='APRIL';
++-----------+------------------+
+| Employees | Month of joining |
++-----------+------------------+
+| JONES     | April            |
++-----------+------------------+
+1 row in set (0.00 sec)
+
+
+34. Write a query in SQL to list the employees those who joined in company before 
+	19th of the month. 
+	
+	mysql> SELECT
+    -> ename "Name of Employee",
+    -> CONCAT(DAY(hiredate),' of ',MONTHNAME(hiredate)) 'Joining Day of Month'
+    -> FROM emp
+    -> WHERE
+    -> DAY(hiredate)<19;
++------------------+----------------------+
+| Name of Employee | Joining Day of Month |
++------------------+----------------------+
+| SMITH            | 17 of December       |
+| JONES            | 2 of April           |
+| BLAKE            | 1 of May             |
+| CLARK            | 9 of June            |
+| SCOTT            | 9 of December        |
+| KING             | 17 of November       |
+| TURNER           | 8 of September       |
+| ADAMS            | 12 of January        |
+| JAMES            | 3 of December        |
+| FORD             | 3 of December        |
++------------------+----------------------+
+10 rows in set (0.00 sec)
+
+	
+35. Write a query in SQL to list the employees who are SALESMAN and gathered an experience 
+	over 10 years.
+	
+	mysql> select ename,job,year(curdate())-year(hiredate)
+    -> from emp
+    -> where
+    -> job='salesman'
+    -> and
+    -> year(curdate())-year(hiredate)>37;
++--------+----------+--------------------------------+
+| ename  | job      | year(curdate())-year(hiredate) |
++--------+----------+--------------------------------+
+| ALLEN  | SALESMAN |                             38 |
+| WARD   | SALESMAN |                             38 |
+| MARTIN | SALESMAN |                             38 |
+| TURNER | SALESMAN |                             38 |
++--------+----------+--------------------------------+
+4 rows in set (0.00 sec)
+
+mysql> SELECT ename 'Employee',
+    -> job 'Designation',
+    -> FLOOR(datediff(curdate(),hiredate)/365) 'Experience'
+    -> From
+    -> emp
+    -> WHERE
+    -> job='Salesman'
+    -> AND
+    -> FLOOR(datediff(curdate(),hiredate)/365)>37;
++----------+-------------+------------+
+| Employee | Designation | Experience |
++----------+-------------+------------+
+| ALLEN    | SALESMAN    |         38 |
+| WARD     | SALESMAN    |         38 |
+| MARTIN   | SALESMAN    |         38 |
+| TURNER   | SALESMAN    |         38 |
++----------+-------------+------------+
+4 rows in set (0.00 sec)
+
+
+36. Write a query in SQL to list the employees of department id 30 or 10 joined in 
+	the year 1981. 
+	mysql> SELECT ename 'Employee Name',
+    -> deptno 'Department Id',
+    -> YEAR(hiredate) 'Year of Joining'
+    -> FROM emp
+    -> WHERE
+    -> YEAR(hiredate)=1981
+    -> AND
+    -> deptno in (10,30)
+    -> ORDER BY
+    -> deptno,ename;
++---------------+---------------+-----------------+
+| Employee Name | Department Id | Year of Joining |
++---------------+---------------+-----------------+
+| CLARK         |            10 |            1981 |
+| KING          |            10 |            1981 |
+| ALLEN         |            30 |            1981 |
+| BLAKE         |            30 |            1981 |
+| JAMES         |            30 |            1981 |
+| MARTIN        |            30 |            1981 |
+| TURNER        |            30 |            1981 |
+| WARD          |            30 |            1981 |
++---------------+---------------+-----------------+
+8 rows in set (0.00 sec)
+
+37. Write a query in SQL to list the employees of department id 30 or 10
+	joined in the year 1981.
+	
+	mysql> SELECT ename 'Employee Name',
+    -> deptno 'Department Id',
+    -> YEAR(hiredate) 'Year of Joining'
+    -> FROM emp
+    -> WHERE
+    -> YEAR(hiredate)=1981
+    -> AND
+    -> deptno in (10,30)
+    -> ORDER BY
+    -> deptno,ename;
++---------------+---------------+-----------------+
+| Employee Name | Department Id | Year of Joining |
++---------------+---------------+-----------------+
+| CLARK         |            10 |            1981 |
+| KING          |            10 |            1981 |
+| ALLEN         |            30 |            1981 |
+| BLAKE         |            30 |            1981 |
+| JAMES         |            30 |            1981 |
+| MARTIN        |            30 |            1981 |
+| TURNER        |            30 |            1981 |
+| WARD          |            30 |            1981 |
++---------------+---------------+-----------------+
+8 rows in set (0.00 sec)
+
+38. Write a query in SQL to list all the employees of designation CLERK in department no 2001.
+ 
+	mysql> SELECT ename 'Employee Name',
+    -> job 'Designation',
+    -> deptno 'Department No'
+    -> FROM emp
+    -> WHERE
+    -> job='CLERK'
+    -> AND
+    -> deptno=20
+    -> ORDER BY ename;
++---------------+-------------+---------------+
+| Employee Name | Designation | Department No |
++---------------+-------------+---------------+
+| ADAMS         | CLERK       |            20 |
+| SMITH         | CLERK       |            20 |
++---------------+-------------+---------------+
+2 rows in set (0.00 sec)
+ 
+39. Write a query in SQL to list the ID, name, salary, and job_name of the employees for - 
+	1.Annual salary is below 34000 but receiving some commission which should not be more than
+	the salary, 
+	
+	mysql> SELECT
+    -> empno 'Employee ID',
+    -> ename 'Employee Name',
+    -> sal*12 'Annual Salary',
+    -> comm*12 'Yearly Commission',
+    -> job 'Job name'
+    -> FROM
+    -> emp
+    -> WHERE comm IS NOT NULL
+    -> AND
+    -> comm<sal
+    -> AND
+    -> sal*12<34000
+    -> ORDER BY
+    -> ename,empno;
++-------------+---------------+---------------+-------------------+----------+
+| Employee ID | Employee Name | Annual Salary | Yearly Commission | Job name |
++-------------+---------------+---------------+-------------------+----------+
+|        7499 | ALLEN         |      19200.00 |           3600.00 | SALESMAN |
+|        7844 | TURNER        |      18000.00 |              0.00 | SALESMAN |
+|        7521 | WARD          |      15000.00 |           6000.00 | SALESMAN |
++-------------+---------------+---------------+-------------------+----------+
+3 rows in set (0.00 sec)
+
+	2. And designation is SALESMAN and working for department 3001. 
+	
+	mysql> SELECT
+    -> empno 'Employee Id',
+    -> ename 'Employee Name',
+    -> sal*12 'Annual Salary',
+    -> comm*12 'Yearly Commission',
+    -> job 'Job name',
+    -> deptno 'Department number'
+    -> FROM
+    -> emp
+    -> WHERE
+    -> comm IS NOT NULL
+    -> AND
+    -> comm<sal
+    -> AND
+    -> sal*12<34000
+    -> AND
+    -> job='Salesman'
+    -> AND
+    -> deptno=30
+    -> ORDER BY
+    -> ename,empno;
++-------------+---------------+---------------+-------------------+----------+-------------------+
+| Employee Id | Employee Name | Annual Salary | Yearly Commission | Job name | Department number |
++-------------+---------------+---------------+-------------------+----------+-------------------+
+|        7499 | ALLEN         |      19200.00 |           3600.00 | SALESMAN |                30 |
+|        7844 | TURNER        |      18000.00 |              0.00 | SALESMAN |                30 |
+|        7521 | WARD          |      15000.00 |           6000.00 | SALESMAN |                30 |
++-------------+---------------+---------------+-------------------+----------+-------------------+
+3 rows in set (0.00 sec)
+	
+40. Write a query in SQL to list the employees who are either CLERK or MANAGER. 
+
+mysql> SELECT ename 'Employee Name',
+    -> job 'Designation'
+    -> FROM emp
+    -> WHERE
+    -> job in ('CLERK','MANAGER')
+    -> ORDER BY
+    -> job,ename;
++---------------+-------------+
+| Employee Name | Designation |
++---------------+-------------+
+| ADAMS         | CLERK       |
+| JAMES         | CLERK       |
+| MILLER        | CLERK       |
+| SMITH         | CLERK       |
+| BLAKE         | MANAGER     |
+| CLARK         | MANAGER     |
+| JONES         | MANAGER     |
++---------------+-------------+
+7 rows in set (0.00 sec)
+
+
+
+41. Write a query in SQL to list the employees who joined in any year except the month February.
+
+mysql> SELECT
+    -> ename 'Employee name',
+    -> DATE_FORMAT(hiredate,'%M') 'Joining month'
+    -> FROM
+    -> emp
+    -> WHERE
+    -> MONTH(hiredate)<>'February';
++---------------+---------------+
+| Employee name | Joining month |
++---------------+---------------+
+| SMITH         | December      |
+| ALLEN         | February      |
+| WARD          | February      |
+| JONES         | April         |
+| MARTIN        | September     |
+| BLAKE         | May           |
+| CLARK         | June          |
+| SCOTT         | December      |
+| KING          | November      |
+| TURNER        | September     |
+| ADAMS         | January       |
+| JAMES         | December      |
+| FORD          | December      |
+| MILLER        | January       |
++---------------+---------------+
+14 rows in set, 1 warning (0.00 sec)
+
+ 
+42. Write a query in SQL to list the employees who joined in the year 91.
+
+mysql> SELECT
+    -> ename 'Employee Name',
+    -> YEAR(hiredate) 'Year of Joining'
+    -> FROM emp
+    -> WHERE
+    -> YEAR(hiredate)=1981
+    -> ORDER BY
+    -> ename;
++---------------+-----------------+
+| Employee Name | Year of Joining |
++---------------+-----------------+
+| ALLEN         |            1981 |
+| BLAKE         |            1981 |
+| CLARK         |            1981 |
+| FORD          |            1981 |
+| JAMES         |            1981 |
+| JONES         |            1981 |
+| KING          |            1981 |
+| MARTIN        |            1981 |
+| TURNER        |            1981 |
+| WARD          |            1981 |
++---------------+-----------------+
+10 rows in set (0.00 sec)
+
+
+43. Write a query in SQL to list the employees who joined in the month of June in 1981. 
+
+mysql> SELECT
+    -> ename 'Employee Name',
+    -> CONCAT(MONTHNAME(hiredate),', ',YEAR(hiredate)) 'Joining'
+    -> FROM
+    -> emp
+    -> WHERE
+    -> MONTHNAME(hiredate)='June'
+    -> AND
+    -> YEAR(hiredate)=1981
+    -> ORDER BY ename;
++---------------+------------+
+| Employee Name | Joining    |
++---------------+------------+
+| CLARK         | June, 1981 |
++---------------+------------+
+1 row in set (0.00 sec)
+
+44. Write a query in SQL to list the employees whose annual salary is within the range 24000
+	and 50000. 
+	
+	mysql> SELECT
+    -> ename 'Employee Name',
+    -> sal*12 'Annual Salary'
+    -> FROM emp
+    -> WHERE
+    -> sal*12 BETWEEN 24000 AND 50000
+    -> ORDER BY
+    -> ename;
++---------------+---------------+
+| Employee Name | Annual Salary |
++---------------+---------------+
+| BLAKE         |      34200.00 |
+| CLARK         |      29400.00 |
+| FORD          |      36000.00 |
+| JONES         |      35700.00 |
+| SCOTT         |      36000.00 |
++---------------+---------------+
+5 rows in set (0.00 sec)
+
+	
+45. Write a query in SQL to list the employees who have joined on the following dates
+	1st May,20th Feb, and 03rd Dec in the year 1991. 
+	
+	mysql> select ename, hiredate from emp 
+	where year(hiredate) = 1981 and month(hiredate) in(5,2,12) 
+	and day(hiredate) in (1,20,3);
++-------+------------+
+| ename | hiredate   |
++-------+------------+
+| ALLEN | 1981-02-20 |
+| BLAKE | 1981-05-01 |
+| JAMES | 1981-12-03 |
+| FORD  | 1981-12-03 |
++-------+------------+
+4 rows in set (0.00 sec)
+	
+	
+	
+46. Write a query in SQL to list the employees working under the managers
+	63679,68319,66564,69000. 
+47. Write a query in SQL to list the employees who joined after the month JUNE in the year 1992. 
+48. Write a query in SQL to list the employees who joined in 90's. 
+49. Write a query in SQL to list the managers of department 1001 or 2001.
+50. Write a query in SQL to list the employees, joined in the month FEBRUARY with a salary 
+	range between 1001 to 2000.
