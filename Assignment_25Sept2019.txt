@@ -1,0 +1,304 @@
+45. Write a query in SQL to list the employees who have joined on the following dates 1st May,
+	20th Feb, and 03rd Dec in the year 1981.    
+	
+	mysql> Select ename 'Employee',date_format(hiredate, '%D %M,%Y') "Date of Joining"
+    -> from emp
+    -> where Year(hiredate)=1981 AND Month(hiredate) in (02,05,12)
+    -> AND Day(hiredate) in (1,20,03);
++----------+--------------------+
+| Employee | Date of Joining    |
++----------+--------------------+
+| ALLEN    | 20th February,1981 |
+| BLAKE    | 1st May,1981       |
+| JAMES    | 3rd December,1981  |
+| FORD     | 3rd December,1981  |
++----------+--------------------+
+4 rows in set (0.00 sec)
+	
+46. Write a query in SQL to list the employees working under
+	the managers 63679,68319,66564,69000. 
+
+	mysql> SELECT ename 'Employee',
+    -> mgr 'Manager'
+    -> FROM emp
+    -> WHERE mgr in (7566,7788,7902);
++----------+---------+
+| Employee | Manager |
++----------+---------+
+| SMITH    |    7902 |
+| SCOTT    |    7566 |
+| ADAMS    |    7788 |
+| FORD     |    7566 |
++----------+---------+
+4 rows in set (0.00 sec)
+
+	
+47. Write a query in SQL to list the employees who joined after the month JUNE in the year 1982.
+
+ mysql> SELECT ename "Employee Name",
+    -> DATE_FORMAT(hiredate, '%M, %Y') "Date Of Joining"
+    -> FROM emp
+    -> WHERE YEAR(hiredate)=1981
+    -> AND MONTH(hiredate)>6;
++---------------+-----------------+
+| Employee Name | Date Of Joining |
++---------------+-----------------+
+| MARTIN        | September, 1981 |
+| KING          | November, 1981  |
+| TURNER        | September, 1981 |
+| JAMES         | December, 1981  |
+| FORD          | December, 1981  |
++---------------+-----------------+
+5 rows in set (0.00 sec)   
+	
+	
+48. Write a query in SQL to list the employees who joined in 80's.  
+
+	mysql> SELECT ename 'Employee',
+    -> hiredate "Date of Joining"
+    -> FROM emp
+    -> WHERE
+    -> YEAR(hiredate) BETWEEN 1980 AND 1989;
++----------+-----------------+
+| Employee | Date of Joining |
++----------+-----------------+
+| SMITH    | 1980-12-17      |
+| ALLEN    | 1981-02-20      |
+| WARD     | 1981-02-22      |
+| JONES    | 1981-04-02      |
+| MARTIN   | 1981-09-28      |
+| BLAKE    | 1981-05-01      |
+| CLARK    | 1981-06-09      |
+| SCOTT    | 1982-12-09      |
+| KING     | 1981-11-17      |
+| TURNER   | 1981-09-08      |
+| ADAMS    | 1983-01-12      |
+| JAMES    | 1981-12-03      |
+| FORD     | 1981-12-03      |
+| MILLER   | 1982-01-23      |
++----------+-----------------+
+14 rows in set (0.00 sec)
+
+
+  
+49. Write a query in SQL to list the managers of department 10 or 20.
+	
+	mysql> SELECT ename "Employee Name",
+    -> job 'Designation'
+    -> FROM emp
+    -> WHERE deptno in(10,20) and job='manager'
+    -> ORDER BY ename;
++---------------+-------------+
+| Employee Name | Designation |
++---------------+-------------+
+| CLARK         | MANAGER     |
+| JONES         | MANAGER     |
++---------------+-------------+
+2 rows in set (0.00 sec)
+	
+	
+50. Write a query in SQL to list the employees, joined in the month FEBRUARY with a salary 
+	range between 1001 to 2000.
+
+	mysql> SELECT ename "Employee Name",
+    -> DATE_FORMAT(hiredate,'%M') "Month of Joining",
+    -> sal "Salary"
+    -> FROM emp
+    -> WHERE
+    -> MONTHNAME(hiredate)='FEBRUARY'
+    -> AND
+    -> sal BETWEEN 1001 AND 2000
+    -> ORDER BY ename;
++---------------+------------------+---------+
+| Employee Name | Month of Joining | Salary  |
++---------------+------------------+---------+
+| ALLEN         | February         | 1600.00 |
+| WARD          | February         | 1250.00 |
++---------------+------------------+---------+
+2 rows in set (0.00 sec)
+
+    
+51. Write a query in SQL to list all the employees who joined before or after 1981.  
+
+	mysql> SELECT ename "Employee Name",
+    -> DATE_FORMAT(hiredate,'%M %d, %Y') "Joining Date"
+    -> FROM
+    -> emp
+    -> WHERE
+    -> year(hiredate)<>1981
+    -> ORDER BY
+    -> hiredate,ename;
++---------------+-------------------+
+| Employee Name | Joining Date      |
++---------------+-------------------+
+| SMITH         | December 17, 1980 |
+| MILLER        | January 23, 1982  |
+| SCOTT         | December 09, 1982 |
+| ADAMS         | January 12, 1983  |
++---------------+-------------------+
+4 rows in set (0.00 sec)
+	
+
+
+  
+52. Write a query in SQL to list the employees along with department name.    
+	
+	SELECT e.ename "Employee Name",
+	d.dname "Department Name"
+	FROM
+	emp e,dept d
+	WHERE
+	e.deptno=d.deptno
+	ORDER BY
+	d.deptno,e.ename;
+	
+	mysql> SELECT e.ename "Employee Name",
+    -> d.dname "Department Name"
+    -> FROM
+    -> emp e,dept d
+    -> WHERE
+    -> e.deptno=d.deptno
+    -> ORDER BY
+    -> d.deptno,e.ename;
++---------------+-----------------+
+| Employee Name | Department Name |
++---------------+-----------------+
+| CLARK         | ACCOUNTING      |
+| KING          | ACCOUNTING      |
+| MILLER        | ACCOUNTING      |
+| ADAMS         | RESEARCH        |
+| FORD          | RESEARCH        |
+| JONES         | RESEARCH        |
+| SCOTT         | RESEARCH        |
+| SMITH         | RESEARCH        |
+| ALLEN         | SALES           |
+| BLAKE         | SALES           |
+| JAMES         | SALES           |
+| MARTIN        | SALES           |
+| TURNER        | SALES           |
+| WARD          | SALES           |
++---------------+-----------------+
+14 rows in set (0.00 sec)
+	
+	
+53. Write a query in SQL to list the name, job name, annual salary, department id, department 
+	name and grade of the employees who earn 60000 in a year or not working as an ANALYST.  
+
+	mysql> SELECT e.ename "Employee Name", e.job "Designation",
+    -> e.sal*12 "Annual Salary", d.deptno "Department Number", d.dname "Department Name",
+    -> s.grade "Salary Grade"
+    -> FROM emp e,dept d,salgrade s
+    -> where e.deptno=d.deptno AND
+    -> (e.sal*12 BETWEEN s.losal*12 AND s.hisal*12) AND
+    -> (e.sal*12=60000 OR e.job<>'ANALYST')
+    -> ORDER BY
+    -> d.deptno,s.grade,e.ename;
++---------------+-------------+---------------+-------------------+-----------------+--------------+
+| Employee Name | Designation | Annual Salary | Department Number | Department Name | Salary Grade |
++---------------+-------------+---------------+-------------------+-----------------+--------------+
+| MILLER        | CLERK       |      15600.00 |                10 | ACCOUNTING      |            2 |
+| CLARK         | MANAGER     |      29400.00 |                10 | ACCOUNTING      |            4 |
+| KING          | PRESIDENT   |      60000.00 |                10 | ACCOUNTING      |            5 |
+| ADAMS         | CLERK       |      13200.00 |                20 | RESEARCH        |            1 |
+| SMITH         | CLERK       |       9600.00 |                20 | RESEARCH        |            1 |
+| JONES         | MANAGER     |      35700.00 |                20 | RESEARCH        |            4 |
+| JAMES         | CLERK       |      11400.00 |                30 | SALES           |            1 |
+| MARTIN        | SALESMAN    |      15000.00 |                30 | SALES           |            2 |
+| WARD          | SALESMAN    |      15000.00 |                30 | SALES           |            2 |
+| ALLEN         | SALESMAN    |      19200.00 |                30 | SALES           |            3 |
+| TURNER        | SALESMAN    |      18000.00 |                30 | SALES           |            3 |
+| BLAKE         | MANAGER     |      34200.00 |                30 | SALES           |            4 |
++---------------+-------------+---------------+-------------------+-----------------+--------------+
+12 rows in set (0.00 sec)
+	
+	
+54. Write a query in SQL to list the name, job name, manager id, salary, manager name, 
+	manager's salary for those employees whose salary is greater than the salary 
+	of their managers.    
+	
+	mysql> SELECT e.ename "Employee Name",
+    -> e.job "Job Name",
+    -> e.mgr "Manager Id",
+    -> m.ename "Manager Name",
+    -> e.sal "Employee's Salary",
+    -> m.sal "Manager's Salary"
+    -> FROM emp e,emp m
+    -> WHERE
+    -> e.mgr=m.empno
+    -> AND
+    -> e.sal>m.sal
+    -> ORDER BY
+    -> e.ename;
++---------------+----------+------------+--------------+-------------------+------------------+
+| Employee Name | Job Name | Manager Id | Manager Name | Employee's Salary | Manager's Salary |
++---------------+----------+------------+--------------+-------------------+------------------+
+| FORD          | ANALYST  |       7566 | JONES        |           3000.00 |          2975.00 |
+| SCOTT         | ANALYST  |       7566 | JONES        |           3000.00 |          2975.00 |
++---------------+----------+------------+--------------+-------------------+------------------+
+2 rows in set (0.00 sec)
+
+	
+55. Write a query in SQL to list the employees name, department, salary and commission. 
+	For those whose salary is between 2000 and 5000 while location is CHICAGO.  
+
+	
+	mysql> SELECT e.ename "Employee",
+    -> d.dname "Department Name",
+    -> e.sal "Salary",
+    -> e.comm "Commission",
+    -> d.loc "Location"
+    -> FROM
+    -> emp e,dept d
+    -> WHERE e.deptno=d.deptno
+    -> AND
+    -> d.loc="CHICAGO"
+    -> AND
+    -> e.sal BETWEEN 2000 AND 5000
+    -> ORDER BY
+    -> ename;
++----------+-----------------+---------+------------+----------+
+| Employee | Department Name | Salary  | Commission | Location |
++----------+-----------------+---------+------------+----------+
+| BLAKE    | SALES           | 2850.00 |       NULL | CHICAGO  |
++----------+-----------------+---------+------------+----------+
+1 row in set (0.00 sec)
+	
+	
+56. Write a query in SQL to list the grade, employee name for the department id 10
+	or 30 but salary grade is not 4 while they joined the company before 1983-12-31. 
+
+	mysql> SELECT e.ename "Employee",
+    -> e.deptno "Department ID",
+    -> e.hiredate "Date of Joining",
+    -> s.grade "Salary Grade"
+    -> FROM
+    -> emp e, salgrade s
+    -> WHERE
+    -> e.sal BETWEEN s.losal AND s.hisal
+    -> AND
+    -> e.deptno in (10,30)
+    -> AND
+    -> e.hiredate<str_to_date('1983-12-31','%Y-%m-%d')
+    -> AND
+    -> s.grade not in (4);
++----------+---------------+-----------------+--------------+
+| Employee | Department ID | Date of Joining | Salary Grade |
++----------+---------------+-----------------+--------------+
+| JAMES    |            30 | 1981-12-03      |            1 |
+| WARD     |            30 | 1981-02-22      |            2 |
+| MARTIN   |            30 | 1981-09-28      |            2 |
+| MILLER   |            10 | 1982-01-23      |            2 |
+| ALLEN    |            30 | 1981-02-20      |            3 |
+| TURNER   |            30 | 1981-09-08      |            3 |
+| KING     |            10 | 1981-11-17      |            5 |
++----------+---------------+-----------------+--------------+
+7 rows in set (0.00 sec)
+
+	
+57. Write a query in SQL to list the employees whose manager name is JONAS.    
+58. Write a query in SQL to list the name and salary of FRANK if his salary is equal 
+	to max_sal of his grade.    
+59. Write a query in SQL to list the employees who are working either MANAGER or ANALYST 
+	with a salary range between 2000 to 5000 without any commission.    
+60. Write a query in SQL to list the id, name, salary, and location of the employees 
+	working at PERTH,or MELBOURNE with an experience over 10 years. 
