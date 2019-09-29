@@ -1,0 +1,603 @@
+57. Write a query in SQL to list the employees whose manager name is JONES.
+    mysql> SELECT e1.ename "Employee Name",e2.ename "Manager"
+    -> FROM emp e1,emp e2
+    -> WHERE
+    -> e1.mgr=e2.empno
+    -> AND
+    -> e2.ename="JONES"
+    -> ORDER BY
+    -> e1.ename;
++---------------+---------+
+| Employee Name | Manager |
++---------------+---------+
+| FORD          | JONES   |
+| SCOTT         | JONES   |
++---------------+---------+
+2 rows in set (0.00 sec)
+
+58. Write a query in SQL to list the name and salary of FRANK if his salary is equal 
+	to max_sal of his grade.  
+				
+	mysql> SELECT e.ename 'Employee',
+    -> e.sal 'Salary',
+    -> s.Grade,
+    -> max(sal)
+    -> FROM emp e,salgrade s
+    -> where e.ename='ADAMS'
+    -> AND
+    -> s.grade=(Select grade
+    -> FROM salgrade
+    -> WHERE e.sal BETWEEN losal AND hisal
+    -> )
+    -> group by e.ename,e.sal
+    -> having max(sal)=e.sal;
++----------+---------+-------+----------+
+| Employee | Salary  | Grade | max(sal) |
++----------+---------+-------+----------+
+| ADAMS    | 1100.00 |     1 |  1100.00 |
++----------+---------+-------+----------+
+1 row in set (0.00 sec)
+		
+				 
+59. Write a query in SQL to list the employees who are working either MANAGER or ANALYST 
+	with a salary range between 2000 to 5000 without any commission.
+
+    
+	mysql> SELECT e.ename "Employee",e.job "Designation",e.sal "Salary"
+    -> FROM emp e
+    -> WHERE e.sal BETWEEN 2000 AND 5000
+    -> AND
+    ->  e.job IN ('MANAGER','ANALYST')
+    -> ORDER BY
+    -> e.ename;
++----------+-------------+---------+
+| Employee | Designation | Salary  |
++----------+-------------+---------+
+| BLAKE    | MANAGER     | 2850.00 |
+| CLARK    | MANAGER     | 2450.00 |
+| FORD     | ANALYST     | 3000.00 |
+| JONES    | MANAGER     | 2975.00 |
+| SCOTT    | ANALYST     | 5000.00 |
++----------+-------------+---------+
+5 rows in set (0.00 sec)
+	
+	
+60. Write a query in SQL to list the id, name, salary, and location of the employees 
+	working at  NEW YORK,or DALLAS with an experience over 37 years. 
+	
+	mysql> SELECT e.empno "Employee Id",
+    -> e.ename "Employee Name",
+    -> e.sal "Salary",
+    -> d.loc "Location"
+    -> FROM emp e, dept d
+    -> WHERE e.deptno=d.deptno
+    -> AND
+    -> d.loc in ('New York','DALLAS')
+    -> AND year(curdate())-year(hiredate)>37
+    -> ORDER BY
+    -> d.loc,e.ename;
++-------------+---------------+---------+----------+
+| Employee Id | Employee Name | Salary  | Location |
++-------------+---------------+---------+----------+
+|        7902 | FORD          | 3000.00 | DALLAS   |
+|        7566 | JONES         | 2975.00 | DALLAS   |
+|        7369 | SMITH         |  800.00 | DALLAS   |
+|        7782 | CLARK         | 2450.00 | NEW YORK |
+|        7839 | KING          | 5000.00 | NEW YORK |
++-------------+---------------+---------+----------+
+5 rows in set (0.00 sec)
+	
+61. Write a query in SQL to list the employees along with their location who 
+	belongs to New York, DALLAS with a salary range between 2000 and 5000 
+	and joined in 1981.
+	
+	mysql> SELECT e.empno "Employee Id",
+    ->      e.ename "Employee Name",
+    ->      e.sal "Salary",
+    ->      d.loc "Location"
+    ->      FROM emp e, dept d
+    ->      WHERE e.deptno=d.deptno
+    ->      AND
+    ->      d.loc in ('New York','DALLAS')
+    ->      AND year(hiredate)=1981
+    ->  	AND
+    ->  	e.sal BETWEEN 2001 AND 4999
+    ->      ORDER BY
+    ->      d.loc,e.ename;
++-------------+---------------+---------+----------+
+| Employee Id | Employee Name | Salary  | Location |
++-------------+---------------+---------+----------+
+|        7902 | FORD          | 3000.00 | DALLAS   |
+|        7566 | JONES         | 2975.00 | DALLAS   |
+|        7782 | CLARK         | 2450.00 | NEW YORK |
++-------------+---------------+---------+----------+
+3 rows in set (0.00 sec)
+	
+62. Write a query in SQL to list the employees with their location and 
+	grade for  ACCOUNTING department who comes from New York or DALLAS 
+	within the grade 3 to 5 and experience over 35 years. 
+	
+	mysql> SELECT e.empno "Employee ID",
+    -> e.ename "Employee Name",
+    -> d.loc "Location",
+    -> d.dname "Department"
+    -> FROM
+    -> emp e,dept d,salgrade s
+    -> WHERE
+    -> e.deptno=d.deptno
+    -> AND
+    -> year(curdate())-year(hiredate)>35
+    -> AND
+    -> s.grade=(SELECT grade from salgrade s1 where e.sal between s1.losal AND s1.hisal)
+    -> AND
+    -> s.grade BETWEEN 3 AND 5
+    -> AND
+    -> d.loc IN ('NEW YORK','DALLAS');
++-------------+---------------+----------+------------+
+| Employee ID | Employee Name | Location | Department |
++-------------+---------------+----------+------------+
+|        7566 | JONES         | DALLAS   | RESEARCH   |
+|        7782 | CLARK         | NEW YORK | ACCOUNTING |
+|        7788 | SCOTT         | DALLAS   | RESEARCH   |
+|        7839 | KING          | NEW YORK | ACCOUNTING |
+|        7902 | FORD          | DALLAS   | RESEARCH   |
++-------------+---------------+----------+------------+
+5 rows in set (0.00 sec)
+	
+	
+63. Write a query in SQL to list the employees who are senior to their own manager. 
+	mysql> SELECT e.ename "Employee Name",
+    -> year(curdate())-year(e.hiredate) "Experience in years"
+    -> FROM emp e
+    -> WHERE
+    -> e.mgr IN(SELECT m.empno
+    -> FROM emp m
+    -> WHERE
+    -> year(m.hiredate)>year(e.hiredate));
+	
+	(year(curdate())-year(e.hiredate))>(year(curdate())-year(m.hiredate)) );
+	
++---------------+---------------------+
+| Employee Name | Experience in years |
++---------------+---------------------+
+| SMITH         |                  39 |
++---------------+---------------------+
+1 row in set (0.00 sec)
+			
+	
+64. Write a query in SQL to list the employee with their grade for the grade 4. 
+	mysql> SELECT e.ename "Employee Name"
+	-> FROM emp e,salgrade s
+	-> WHERE s.grade=(SELECT grade FROM salgrade s1 WHERE e.sal BETWEEN s1.losal AND s1.hisal )
+	-> AND
+	-> s.grade>4
+	-> ORDER BY
+	-> e.ename;
+	+---------------+
+	| Employee Name |
+	+---------------+
+	| KING          |
+	| SCOTT         |
+	+---------------+
+	2 rows in set (0.00 sec)
+
+65. Write a query in SQL to list the employees of grade 2 in department 
+	 RESEARCH or SALES who joined after 1981 and they are not  JONES or SCOTT to their name.
+	
+		mysql> SELECT e.ename,d.dname,date_format(e.hiredate,"%M %D,%Y") "Joining Date",s.grade "Grade"
+		-> FROM
+		-> emp e,dept d,salgrade s
+		-> WHERE
+		-> e.deptno=d.deptno
+		-> AND
+		-> e.ename NOT IN ("JONES","SCOTT")
+		-> AND
+		-> d.dname IN ("ACCOUNTING","SALES")
+		-> AND
+		-> year(e.hiredate)>1981
+		-> AND
+		-> s.grade=(select grade from  salgrade s1 WHERE e.sal BETWEEN s1.losal AND s1.hisal)
+		-> AND
+		-> s.grade=2
+		-> ORDER BY
+		-> e.ename;
+	+--------+------------+-------------------+-------+
+	| ename  | dname      | Joining Date      | Grade |
+	+--------+------------+-------------------+-------+
+	| MILLER | ACCOUNTING | January 23rd,1982 |     2 |
+	+--------+------------+-------------------+-------+
+	1 row in set (0.00 sec)
+		
+66. Write a query in SQL to list the employees in the ascending order of their salaries.
+
+	mysql> SELECT ename "Employee Name",
+    -> sal "Salary"
+    -> FROM emp
+    -> ORDER BY sal,ename;
++---------------+---------+
+| Employee Name | Salary  |
++---------------+---------+
+| Vineet        |    NULL |
+| SMITH         |  800.00 |
+| JAMES         |  950.00 |
+| ADAMS         | 1100.00 |
+| MARTIN        | 1250.00 |
+| WARD          | 1250.00 |
+| MILLER        | 1300.00 |
+| TURNER        | 1500.00 |
+| ALLEN         | 1600.00 |
+| CLARK         | 2450.00 |
+| BLAKE         | 2850.00 |
+| JONES         | 2975.00 |
+| FORD          | 3000.00 |
+| KING          | 5000.00 |
+| SCOTT         | 5000.00 |
++---------------+---------+
+15 rows in set (0.00 sec)
+
+ 
+67. Write a query in SQL to list the details of the employees in ascending 
+	order to the department_id and descending order to the jobs. 
+	mysql> SELECT *
+    -> FROM emp e
+    -> WHERE e.deptno=( SELECT d.deptno
+    -> FROM dept d
+    -> WHERE e.deptno=d.deptno)
+    -> ORDER BY e.deptno asc, e.job desc;
++-------+--------+-----------+------+------------+---------+---------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL     | COMM    | DEPTNO |
++-------+--------+-----------+------+------------+---------+---------+--------+
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 | 5000.00 |    NULL |     10 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 | 2450.00 |    NULL |     10 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 | 1300.00 |    NULL |     10 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 2975.00 |    NULL |     20 |
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  800.00 |    NULL |     20 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 | 1100.00 |    NULL |     20 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 | 5000.00 |    NULL |     20 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 | 3000.00 |    NULL |     20 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 | 1600.00 |  300.00 |     30 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 | 1250.00 |  500.00 |     30 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 | 1250.00 | 1400.00 |     30 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 | 1500.00 |    0.00 |     30 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 | 2850.00 |    NULL |     30 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |  950.00 |    NULL |     30 |
++-------+--------+-----------+------+------------+---------+---------+--------+
+14 rows in set (0.00 sec)
+
+	
+68. Write a query in SQL to display all the unique job in descending order. 
+
+	mysql> SELECT
+    -> DISTINCT job
+    -> FROM
+    -> emp
+    -> ORDER BY
+    -> job DESC;
++-----------+
+| job       |
++-----------+
+| SALESMAN  |
+| PRESIDENT |
+| MANAGER   |
+| CLERK     |
+| ANALYST   |
+| NULL      |
++-----------+
+6 rows in set (0.00 sec)
+
+69. Write a query in SQL to list the id, name, monthly salary, daily salary 
+	of all the employees in the ascending order of their annual salary.
+
+	
+mysql> SELECT empno "Employee Id",
+    -> ename "Employee Name",
+    -> sal "Monthly Salary",
+    -> ROUND(sal/30,2) "Daily Salary"
+    -> FROM emp
+    -> ORDER BY
+    -> sal*12;
++-------------+---------------+----------------+--------------+
+| Employee Id | Employee Name | Monthly Salary | Daily Salary |
++-------------+---------------+----------------+--------------+
+|        2222 | Vineet        |           NULL |         NULL |
+|        7369 | SMITH         |         800.00 |        26.67 |
+|        7900 | JAMES         |         950.00 |        31.67 |
+|        7876 | ADAMS         |        1100.00 |        36.67 |
+|        7521 | WARD          |        1250.00 |        41.67 |
+|        7654 | MARTIN        |        1250.00 |        41.67 |
+|        7934 | MILLER        |        1300.00 |        43.33 |
+|        7844 | TURNER        |        1500.00 |        50.00 |
+|        7499 | ALLEN         |        1600.00 |        53.33 |
+|        7782 | CLARK         |        2450.00 |        81.67 |
+|        7698 | BLAKE         |        2850.00 |        95.00 |
+|        7566 | JONES         |        2975.00 |        99.17 |
+|        7902 | FORD          |        3000.00 |       100.00 |
+|        7788 | SCOTT         |        5000.00 |       166.67 |
+|        7839 | KING          |        5000.00 |       166.67 |
++-------------+---------------+----------------+--------------+
+15 rows in set (0.00 sec)
+	
+70. Write a query in SQL to list the employees in descending order who are 
+	either 'CLERK' or 'ANALYST'.
+	
+	mysql> SELECT ename "Employee Name", job "Designation"
+    -> FROM
+    -> emp
+    -> WHERE job IN ("CLERK","ANALYST")
+    -> ORDER BY
+    -> ename DESC;
++---------------+-------------+
+| Employee Name | Designation |
++---------------+-------------+
+| SMITH         | CLERK       |
+| SCOTT         | ANALYST     |
+| MILLER        | CLERK       |
+| JAMES         | CLERK       |
+| FORD          | ANALYST     |
+| ADAMS         | CLERK       |
++---------------+-------------+
+6 rows in set (0.00 sec)
+
+71. Write a query in SQL to display the location of CLARK.
+
+	mysql> SELECT e.ename "Employee",
+    -> d.loc "Location"
+    -> FROM emp e,dept d
+    -> WHERE e.deptno=d.deptno
+    -> AND
+    -> e.ename='CLARK';
++----------+----------+
+| Employee | Location |
++----------+----------+
+| CLARK    | NEW YORK |
++----------+----------+
+1 row in set (0.00 sec)
+
+
+72. Write a query in SQL to list the employees in ascending order
+	of seniority who joined on 1-MAY-81,or 3-DEC-81, or 12-JAN-83.
+	
+	mysql> SELECT ename "Employee Name",
+    -> DATE_FORMAT(hiredate,'%d-%M-%y') "Joining Date"
+    -> FROM emp
+    -> WHERE
+    -> hiredate in (str_to_date('1-MAY-81','%d-%M-%y'),
+    -> str_to_date('3-DEC-81','%d-%M-%y'),str_to_date('12-JAN-83','%d-%M-%y'))
+    -> ORDER BY
+    -> hiredate;
++---------------+----------------+
+| Employee Name | Joining Date   |
++---------------+----------------+
+| BLAKE         | 01-May-81      |
+| JAMES         | 03-December-81 |
+| FORD          | 03-December-81 |
+| ADAMS         | 12-January-83  |
++---------------+----------------+
+4 rows in set (0.00 sec)
+	
+
+73. Write a query in SQL to list the employees who are drawing the salary
+	less than 1000 and sort the output in ascending order on salary.
+
+	mysql> SELECT ename "Employee Name",
+    -> sal "Salary"
+    -> FROM emp
+    -> WHERE
+    -> sal>1000
+    -> ORDER BY
+    -> sal;
++---------------+---------+
+| Employee Name | Salary  |
++---------------+---------+
+| ADAMS         | 1100.00 |
+| WARD          | 1250.00 |
+| MARTIN        | 1250.00 |
+| MILLER        | 1300.00 |
+| TURNER        | 1500.00 |
+| ALLEN         | 1600.00 |
+| CLARK         | 2450.00 |
+| BLAKE         | 2850.00 |
+| JONES         | 2975.00 |
+| FORD          | 3000.00 |
+| SCOTT         | 5000.00 |
+| KING          | 5000.00 |
++---------------+---------+
+12 rows in set (0.00 sec)
+
+
+74. Write a query in SQL to list the details of the employees in
+	ascending order on the salary.
+
+	
+mysql> SELECT*
+    -> FROM emp
+    -> ORDER BY
+    -> sal;
++-------+--------+-----------+------+------------+---------+---------+--------+
+| EMPNO | ENAME  | JOB       | MGR  | HIREDATE   | SAL     | COMM    | DEPTNO |
++-------+--------+-----------+------+------------+---------+---------+--------+
+|  7369 | SMITH  | CLERK     | 7902 | 1980-12-17 |  800.00 |    NULL |     20 |
+|  7900 | JAMES  | CLERK     | 7698 | 1981-12-03 |  950.00 |    NULL |     30 |
+|  7876 | ADAMS  | CLERK     | 7788 | 1983-01-12 | 1100.00 |    NULL |     20 |
+|  7521 | WARD   | SALESMAN  | 7698 | 1981-02-22 | 1250.00 |  500.00 |     30 |
+|  7654 | MARTIN | SALESMAN  | 7698 | 1981-09-28 | 1250.00 | 1400.00 |     30 |
+|  7934 | MILLER | CLERK     | 7782 | 1982-01-23 | 1300.00 |    NULL |     10 |
+|  7844 | TURNER | SALESMAN  | 7698 | 1981-09-08 | 1500.00 |    0.00 |     30 |
+|  7499 | ALLEN  | SALESMAN  | 7698 | 1981-02-20 | 1600.00 |  300.00 |     30 |
+|  7782 | CLARK  | MANAGER   | 7839 | 1981-06-09 | 2450.00 |    NULL |     10 |
+|  7698 | BLAKE  | MANAGER   | 7839 | 1981-05-01 | 2850.00 |    NULL |     30 |
+|  7566 | JONES  | MANAGER   | 7839 | 1981-04-02 | 2975.00 |    NULL |     20 |
+|  7902 | FORD   | ANALYST   | 7566 | 1981-12-03 | 3000.00 |    NULL |     20 |
+|  7788 | SCOTT  | ANALYST   | 7566 | 1982-12-09 | 5000.00 |    NULL |     20 |
+|  7839 | KING   | PRESIDENT | NULL | 1981-11-17 | 5000.00 |    NULL |     10 |
++-------+--------+-----------+------+------------+---------+---------+--------+
+14 rows in set (0.00 sec)
+
+
+
+75. Write a query in SQL to list the employees in ascending order
+	on job name and descending order on employee id.
+	
+	
+mysql> SELECT ename "Employee Name",
+    -> empno "Employee ID",
+    -> job "Job Name"
+    -> FROM emp
+    -> ORDER BY
+    -> job, empno desc;
++---------------+-------------+-----------+
+| Employee Name | Employee ID | Job Name  |
++---------------+-------------+-----------+
+| FORD          |        7902 | ANALYST   |
+| SCOTT         |        7788 | ANALYST   |
+| MILLER        |        7934 | CLERK     |
+| JAMES         |        7900 | CLERK     |
+| ADAMS         |        7876 | CLERK     |
+| SMITH         |        7369 | CLERK     |
+| CLARK         |        7782 | MANAGER   |
+| BLAKE         |        7698 | MANAGER   |
+| JONES         |        7566 | MANAGER   |
+| KING          |        7839 | PRESIDENT |
+| TURNER        |        7844 | SALESMAN  |
+| MARTIN        |        7654 | SALESMAN  |
+| WARD          |        7521 | SALESMAN  |
+| ALLEN         |        7499 | SALESMAN  |
++---------------+-------------+-----------+
+14 rows in set (0.00 sec)
+
+	
+	
+76. Write a query in SQL to list the unique jobs of department 20 and 30 in
+	descending order.
+	
+	mysql> SELECT
+	-> DISTINCT job
+	-> FROM
+	-> emp
+	-> WHERE
+	-> deptno IN (20,30)
+	-> ORDER BY
+	-> deptno;
+	+----------+
+	| job      |
+	+----------+
+	| MANAGER  |
+	| ANALYST  |
+	| CLERK    |
+	| SALESMAN |
+	+----------+
+	4 rows in set (0.00 sec)
+
+
+77. Write a query in SQL to list all the employees except PRESIDENT and
+	MANAGER in ascending order of salaries.
+	
+	mysql> SELECT
+    -> ename "Employee Name",
+    -> job "Job",
+    -> sal "Salary"
+    -> FROM emp
+    -> WHERE
+    -> job NOT IN ("PRESIDENT","MANAGER")
+    -> ORDER BY
+    -> sal;
++---------------+----------+---------+
+| Employee Name | Job      | Salary  |
++---------------+----------+---------+
+| SMITH         | CLERK    |  800.00 |
+| JAMES         | CLERK    |  950.00 |
+| ADAMS         | CLERK    | 1100.00 |
+| WARD          | SALESMAN | 1250.00 |
+| MARTIN        | SALESMAN | 1250.00 |
+| MILLER        | CLERK    | 1300.00 |
+| TURNER        | SALESMAN | 1500.00 |
+| ALLEN         | SALESMAN | 1600.00 |
+| FORD          | ANALYST  | 3000.00 |
+| SCOTT         | ANALYST  | 5000.00 |
++---------------+----------+---------+
+10 rows in set (0.00 sec)
+
+78. Write a query in SQL to list the employees in ascending order of 
+	the salary whose annual salary is below 25000. 
+
+	mysql> SELECT ename "Employee Name",
+    -> sal*12 "Annual Salary"
+    -> FROM emp
+    -> WHERE sal*12<25000
+    -> ORDER BY
+    -> sal*12;
++---------------+---------------+
+| Employee Name | Annual Salary |
++---------------+---------------+
+| SMITH         |       9600.00 |
+| JAMES         |      11400.00 |
+| ADAMS         |      13200.00 |
+| WARD          |      15000.00 |
+| MARTIN        |      15000.00 |
+| MILLER        |      15600.00 |
+| TURNER        |      18000.00 |
+| ALLEN         |      19200.00 |
++---------------+---------------+
+8 rows in set (0.00 sec)
+
+
+
+79. Write a query in SQL to list the employee id, name, annual salary, 
+	daily salary of all the employees in the ascending order of annual salary 
+	who works as a SALESMAN. 
+	
+	mysql> SELECT
+    -> empno "Employee ID",
+    -> ename "Employee Name",
+    -> sal*12 "Annual Salary",
+    -> ROUND(sal/30,2) "Daily Salary"
+    -> FROM
+    -> emp
+    -> WHERE
+    -> job="SALESMAN"
+    -> ORDER BY
+    -> sal;
++-------------+---------------+---------------+--------------+
+| Employee ID | Employee Name | Annual Salary | Daily Salary |
++-------------+---------------+---------------+--------------+
+|        7521 | WARD          |      15000.00 |        41.67 |
+|        7654 | MARTIN        |      15000.00 |        41.67 |
+|        7844 | TURNER        |      18000.00 |        50.00 |
+|        7499 | ALLEN         |      19200.00 |        53.33 |
++-------------+---------------+---------------+--------------+
+4 rows in set (0.00 sec)
+
+
+80. Write a query in SQL to list the employee id, name, hire_date, 
+	current date and experience of the employees in ascending order 
+	on their experiences.
+	
+	mysql> SELECT empno "Employee ID",
+    -> ename "Employee Name",
+    -> hiredate "HIREDATE",
+    -> curdate() "Current Date",
+    -> year(curdate())-year(hiredate) "Experience"
+    -> FROM emp
+    -> ORDER BY
+    -> year(curdate())-year(hiredate);
++-------------+---------------+------------+--------------+------------+
+| Employee ID | Employee Name | HIREDATE   | Current Date | Experience |
++-------------+---------------+------------+--------------+------------+
+|        7876 | ADAMS         | 1983-01-12 | 2019-09-26   |         36 |
+|        7788 | SCOTT         | 1982-12-09 | 2019-09-26   |         37 |
+|        7934 | MILLER        | 1982-01-23 | 2019-09-26   |         37 |
+|        7499 | ALLEN         | 1981-02-20 | 2019-09-26   |         38 |
+|        7521 | WARD          | 1981-02-22 | 2019-09-26   |         38 |
+|        7566 | JONES         | 1981-04-02 | 2019-09-26   |         38 |
+|        7654 | MARTIN        | 1981-09-28 | 2019-09-26   |         38 |
+|        7698 | BLAKE         | 1981-05-01 | 2019-09-26   |         38 |
+|        7782 | CLARK         | 1981-06-09 | 2019-09-26   |         38 |
+|        7839 | KING          | 1981-11-17 | 2019-09-26   |         38 |
+|        7844 | TURNER        | 1981-09-08 | 2019-09-26   |         38 |
+|        7900 | JAMES         | 1981-12-03 | 2019-09-26   |         38 |
+|        7902 | FORD          | 1981-12-03 | 2019-09-26   |         38 |
+|        7369 | SMITH         | 1980-12-17 | 2019-09-26   |         39 |
++-------------+---------------+------------+--------------+------------+
+14 rows in set (0.00 sec)
+	
+	
