@@ -1,0 +1,366 @@
+1. WRITE A FUNCTION TO COMPUTE THE FOLLOWING. FUNCTION
+	SHOULD TAKE EMP_NUM AND RETURN THE COST TO COMPANY.
+	DA = 15% SALARY, HRA= 20% OF SALARY, TA= 8% OF SALARY.
+	SPECIAL ALLOWANCE WILL BE DECIDED BASED ON THE SERVICE IN
+	THE COMPANY.
+	< 1 YEAR NIL
+	>=1 YEAR< 2 YEAR 10% OF SALARY
+	>=2 YEAR< 4 YEAR 20% OF SALARY
+	>4 YEAR 30% OF SALARY
+	
+	SET GLOBAL log_bin_trust_function_creators = 1;
+	delimiter //
+	create function cost_to_comp(eempno int,esal int,ehiredate date) returns int
+	begin
+	declare vsal int;
+	set vsal=esal+esal*0.15+esal*20+esal*0.08;
+	if (YEAR(curdate())-YEAR(ehiredate))<10 then
+	set vsal=vsal+0;
+	elseif ((YEAR(curdate())-YEAR(ehiredate))<20) then
+	set vsal=vsal+esal*0.1;
+	elseif ((YEAR(curdate())-YEAR(ehiredate))<40) then
+	set vsal=vsal+esal*0.2;
+	else
+	set vsal=vsal+esal*0.3;
+	end if;
+	return vsal;
+	end
+	//
+	delimiter ;
+	
+
+	SELECT ename,sal,cost_to_comp(empno,sal,hiredate)
+	FROM emp
+	WHERE
+	empno=7902;
+	
+	*********
+	SET GLOBAL log_bin_trust_function_creators = 1;
+	delimiter //
+	create function cost_to_comp(eempno int) returns int
+	begin
+	declare vsal int;
+	declare esal int;
+	declare ehiredate date;
+	SELECT sal,hiredate
+	INTO esal,ehiredate
+	FROM emp
+	WHERE empno=eempno;
+	set vsal=esal+(esal*0.15)+(esal*0.20)+(esal*0.08)
+	if (YEAR(curdate())-YEAR(ehiredate))<10 then
+	set vsal=vsal+0;
+	elseif ((YEAR(curdate())-YEAR(ehiredate))<20) then
+	set vsal=vsal+(esal*0.1);
+	elseif ((YEAR(curdate())-YEAR(ehiredate))<40) then
+	set vsal=vsal+(esal*0.2);
+	else
+	set vsal=vsal+(esal*0.3);
+	end if;
+	return vsal;
+	end
+	//
+	delimiter ;
+	
+	
+	SELECT ename,cost_to_comp(empno)
+	FROM emp;
+	
+	mysql> SELECT ename,cost_to_comp(empno)
+    -> FROM emp;
+	+--------+---------------------+
+	| ename  | cost_to_comp(empno) |
+	+--------+---------------------+
+	| SMITH  |                1304 |
+	| ALLEN  |                2608 |
+	| WARD   |                2038 |
+	| JONES  |                4849 |
+	| MARTIN |                2038 |
+	| BLAKE  |                4646 |
+	| CLARK  |                3994 |
+	| SCOTT  |                4890 |
+	| KING   |                8150 |
+	| TURNER |                2445 |
+	| ADAMS  |                1793 |
+	| JAMES  |                1549 |
+	| FORD   |                4890 |
+	| MILLER |                2119 |
+	+--------+---------------------+
+	14 rows in set (0.00 sec)
+	
+	drop function cost_to_comp;
+	
+	
+	
+*********************************************************************************	
+
+2. Write a procedure that displays the following
+	information of all emp
+	Emp_Name Department Name Designation Salary Status
+	Note: - Status will be (Greater, Lesser or Equal) respective
+	to average salary of their own
+	department. Display an error message Emp table is empty if
+	there is no matching
+	record.
+	
+	
+	
+	delimiter //
+	create procedure sal_status(pename varchar(10),out pstatus varchar(10))
+	begin
+	declare vsal int;
+	declare vavg int;
+	SELECT sal,
+	avg(sal)
+	INTO vsal,vavg
+	FROM emp
+	WHERE ename=pename;
+	if vsal=vavg then
+		set pstatus="Equal";
+	elseif vsal>vavg then
+		set pstatus="Greater";
+	else
+		set pstatus="Lesser";
+	end if;
+	select pstatus;
+	end//
+	delimiter ;
+	
+	call sal_status('ename',@status);
+	
+	drop procedure if exists sal_status;
+	
+	
+	
+*********************************************************************************************
+
+
+3. Write a function to compute the following. Function
+	should take Emp_num and return
+	the cost to company.
+	DA = 15% Salary, HRA= 20% of Salary, TA= 8% of Salary.
+	Special Allowance will be decided based on the service in
+	the company.
+	< 1 Year Nil
+	>=1 Year< 2 Year 10% of Salary
+	>=2 Year< 4 Year 20% of Salary
+	>4 Year 30% of Salary	
+	
+	drop function if exists cost_to_comp;
+	SET GLOBAL log_bin_trust_function_creators = 1;
+	delimiter //
+	create function cost_to_comp(eempno int) returns int
+	begin
+	declare vsal int;
+	declare esal int;
+	declare ehiredate date;
+	SELECT sal,hiredate
+	INTO esal,ehiredate
+	FROM emp
+	WHERE empno=eempno;
+	set vsal=esal+(esal*0.15)+(esal*0.20)+(esal*0.08);
+	if (YEAR(curdate())-YEAR(ehiredate))<10 then
+	set vsal=vsal;
+	elseif (YEAR(curdate())-YEAR(ehiredate))<20 then
+	set vsal=vsal+(esal*0.1);
+	elseif (YEAR(curdate())-YEAR(ehiredate))<40 then
+	set vsal=vsal+(esal*0.2);
+	else
+	set vsal=vsal+(esal*0.3);
+	end if;
+	return vsal;
+	end
+	//
+	delimiter ;
+	
+	
+	SELECT ename,sal,cost_to_comp(empno)
+	FROM emp;
+	
+	
+********************************************************************************************
+
+4. Write a procedure that displays the following
+information of all emp
+Emp_Name Department Name Designation Salary Status
+Note: - Status will be (Greater, Lesser or Equal) respective
+to average salary of their own
+department. Display an error message table is if there is
+no matching
+record.
+
+	drop procedure if exists sal_status;
+	delimiter //
+	create procedure sal_status(pename varchar(10),out pstatus varchar(10))
+	begin
+	declare vsal int;
+	declare vavg int;
+	SELECT sal,
+	avg(sal)
+	INTO vsal,vavg
+	FROM emp
+	WHERE ename=pename;
+	if vsal=vavg then
+		set pstatus="Equal";
+	elseif vsal>vavg then
+		set pstatus="Greater";
+	else
+		set pstatus="Lesser";
+	end if;
+	select pstatus;
+	end//
+	delimiter ;
+	
+	call sal_status('ename',@status);
+	
+********************************************************************************************
+
+6. Write a procedure and a function.
+Function: This function will return years of experience for a
+emp. This function will take the
+empid of the emp as an input parameter. The output will be
+rounded to the nearest year
+(1.4 year will be considered as 1 year and 1.5 year will be
+considered as 2 year).
+
+Procedure: Capture the value returned by the above
+function to calculate the additional
+allowance for the emp based on the experience.
+Additional Allowance = Year of experience x 3000
+Calculate the additional allowance and store Emp_num,
+Date of Joining, and Experience in
+years and additional allowance in Emp_Allowance table.
+
+
+
+DROP FUNCTION IF EXISTS experience_of_employee;
+DELIMITER //
+CREATE FUNCTION experience_of_employee(pempid int) RETURNS int
+BEGIN
+	DECLARE v_emp_experience INT DEFAULT 0;
+	SELECT
+	ROUND((DATEDIFF(curdate(),hiredate))/365,0)
+	INTO
+	v_emp_experience
+	FROM
+	emp
+	WHERE
+	empno=pempid;
+	
+	RETURN v_emp_experience;
+END
+//
+DELIMITER ;
+*********************************************
+DELIMITER //
+DROP PROCEDURE IF EXISTS additional_allowance;
+DROP TABLE IF EXISTS Emp_Allowance;
+CREATE TABLE Emp_Allowance AS SELECT empno,hiredate,experience_of_employee(empno) AS "exp" FROM emp WHERE 1=2;
+
+ALTER TABLE Emp_Allowance
+ADD additional_allowance DECIMAL(13,2);
+
+CREATE PROCEDURE additional_allowance()
+BEGIN
+
+DECLARE cend INT DEFAULT 0;
+
+DECLARE v_empno INT;
+DECLARE v_hire DATE;
+DECLARE v_exp INT;
+DECLARE v_add DECIMAL(13,2);
+
+DECLARE emp_cur CURSOR FOR SELECT empno,hiredate FROM emp;
+
+DECLARE CONTINUE HANDLER FOR NOT FOUND SET cend=1;
+
+OPEN emp_cur;
+
+
+label1: LOOP	
+	FETCH emp_cur INTO v_empno,v_hire;
+	IF cend=1 THEN
+			LEAVE label1;
+	END IF;
+	
+	SET v_exp=experience_of_employee(v_empno);
+	SET v_add=v_exp*3000;
+	INSERT INTO Emp_Allowance VALUES(v_empno,v_hire,v_exp,v_add);
+END LOOP label1;
+
+CLOSE emp_cur;
+
+END//
+DELIMITER ;
+
+
+********************************************************************************************************
+
+Q2. Trigger
+1. Write a trigger which add entry in audit table when user
+tries to insert or delete records in employee table on sat
+or sun
+
+
+CREATE TABLE IF NOT EXISTS audit AS SELECT *FROM emp2 WHERE 1=2;
+DELIMITER //
+DROP TRIGGER IF EXISTS check_entry_1;
+	CREATE TRIGGER check_entry_1 BEFORE DELETE ON emp2
+	FOR EACH ROW
+	BEGIN
+	
+	IF DAYNAME(curdate()) = "Saturday" OR DAYNAME(curdate()) = "Sunday" THEN	
+	INSERT INTO audit VALUES(OLD.empno,OLD.ename,OLD.job,OLD.MGR,OLD.hiredate,OLD.sal,OLD.comm,OLD.deptno);
+	END IF;	
+	END;
+	//	
+DELIMITER ;
+
+***************************************
+
+DELIMITER //
+DROP TRIGGER IF EXISTS check_entry_2;
+	CREATE TRIGGER check_entry_2 BEFORE INSERT ON emp2
+	FOR EACH ROW
+	BEGIN
+	IF DAYNAME(curdate()) = "Saturday" OR DAYNAME(curdate()) = "Sunday" THEN	
+	SIGNAL SQLSTATE '02000' SET MESSAGE_TEXT = "Cannot delete records for Saturday or Sunday";
+	INSERT INTO audit VALUES(NEW.empno,NEW.ename,NEW.job,NEW.MGR,NEW.hiredate,NEW.sal,NEW.comm,NEW.deptno);
+	END IF;	
+	END;
+	//	
+DELIMITER ;
+
+**************************************************************************************************
+2. Create table order_history. Write a trigger to store old
+qty and old cost of order in history table before you
+update qty and cost of order.
+
+create table category(
+catid int primary key,
+cname varchar(20)
+);
+
+create table product(
+pid int primary key,
+pname varchar(30),
+qty int check (qty>0),
+cid int,
+FOREIGN KEY fk_cat(cid) 
+REFERENCES category(catid)
+ON UPDATE CASCADE
+ON DELETE set null
+);
+
+create table IF NOT EXISTS product2 AS SELECT *FROM product;
+
+DELIMITER //
+DROP TRIGGER IF EXISTS old_qty;
+CREATE TABLE IF NOT EXISTS product_backup(old_qty INT,old_price INT,new_qty INT,new_price INT);
+	CREATE TRIGGER old_qty BEFORE UPDATE ON product2
+	FOR EACH ROW
+	BEGIN
+	INSERT INTO product_backup VALUES(old.qty,old.price,new.qty,new.price);
+	
+	END;
+	//	
+DELIMITER ;
