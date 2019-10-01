@@ -1,0 +1,80 @@
+mysql> CREATE TABLE IF NOT EXISTS
+    -> BRANCH(BID INTEGER PRIMARY KEY,
+    -> BRNAME CHAR(30),
+    -> BRCITY CHAR(10) DEFAULT 'AUNDH');
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> describe branch;
++--------+----------+------+-----+---------+-------+
+| Field  | Type     | Null | Key | Default | Extra |
++--------+----------+------+-----+---------+-------+
+| BID    | int(11)  | NO   | PRI | NULL    |       |
+| BRNAME | char(30) | YES  |     | NULL    |       |
+| BRCITY | char(10) | YES  |     | AUNDH   |       |
++--------+----------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
+
+mysql> CREATE TABLE IF NOT EXISTS
+    -> CUSTOMER
+    -> (
+    -> CNO INTEGER PRIMARY KEY,
+    -> CNAME CHAR(20),
+    -> CADDR CHAR(35),
+    -> CITY CHAR(20)
+    -> );
+Query OK, 0 rows affected (0.10 sec)
+
+mysql> describe customer;
++-------+----------+------+-----+---------+-------+
+| Field | Type     | Null | Key | Default | Extra |
++-------+----------+------+-----+---------+-------+
+| CNO   | int(11)  | NO   | PRI | NULL    |       |
+| CNAME | char(20) | YES  |     | NULL    |       |
+| CADDR | char(35) | YES  |     | NULL    |       |
+| CITY  | char(20) | YES  |     | NULL    |       |
++-------+----------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+mysql> CREATE TABLE IF NOT EXISTS
+    -> LOAN_APPLICATION
+    -> (
+    -> LNO INTEGER PRIMARY KEY,
+    -> LAMTREQUIRED DECIMAL(15,2),
+    -> LAMTAPPROVED DECIMAL(15,2),
+    -> L_DATE DATE
+    -> );
+Query OK, 0 rows affected (0.13 sec)
+
+mysql> describe loan_application;
++--------------+---------------+------+-----+---------+-------+
+| Field        | Type          | Null | Key | Default | Extra |
++--------------+---------------+------+-----+---------+-------+
+| LNO          | int(11)       | NO   | PRI | NULL    |       |
+| LAMTREQUIRED | decimal(15,2) | YES  |     | NULL    |       |
+| LAMTAPPROVED | decimal(15,2) | YES  |     | NULL    |       |
+| L_DATE       | date          | YES  |     | NULL    |       |
++--------------+---------------+------+-----+---------+-------+
+4 rows in set (0.00 sec)
+
+
+mysql> CREATE TABLE IF NOT EXISTS
+    -> TERNARY
+    -> (
+    -> BID INTEGER,
+    -> CNO INTEGER,
+    -> LNO INTEGER,
+    -> FOREIGN KEY (BID) REFERENCES BRANCH(BID) ON UPDATE CASCADE ON DELETE SET NULL,
+    -> FOREIGN KEY (CNO) REFERENCES CUSTOMER(CNO) ON UPDATE CASCADE ON DELETE SET NULL,
+    -> FOREIGN KEY (LNO) REFERENCES LOAN_APPLICATION(LNO) ON UPDATE CASCADE ON DELETE SET NULL
+    -> );
+Query OK, 0 rows affected (0.14 sec)
+
+mysql> describe ternary;
++-------+---------+------+-----+---------+-------+
+| Field | Type    | Null | Key | Default | Extra |
++-------+---------+------+-----+---------+-------+
+| BID   | int(11) | YES  | MUL | NULL    |       |
+| CNO   | int(11) | YES  | MUL | NULL    |       |
+| LNO   | int(11) | YES  | MUL | NULL    |       |
++-------+---------+------+-----+---------+-------+
+3 rows in set (0.00 sec)
