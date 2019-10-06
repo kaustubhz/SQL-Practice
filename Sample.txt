@@ -1,0 +1,75 @@
+CREATE TABLE IF NOT EXISTS customer2
+(
+cust_id INTEGER(5) PRIMARY KEY,
+cname VARCHAR(30) NOT NULL,
+adhar_number VARCHAR(20) UNIQUE NOT NULL,
+city VARCHAR(10),
+state VARCHAR(10)
+);
+
+CREATE TABLE IF NOT EXISTS `order`
+(
+orderid INTEGER(5) PRIMARY KEY,
+orderdate VARCHAR(30) NOT NULL,
+orderamt VARCHAR(20),
+custid INTEGER(5),
+CONSTRAINT fk_cust_id FOREIGN KEY (custid) REFERENCES customer2(cust_id) ON UPDATE CASCADE ON DELETE SET NULL
+);
+
+INSERT INTO customer2 (cust_id,cname,adhar_number,city,state) VALUES(1001,"Pranjan","1234456","Bhandara","MH"),(1002,"Vaishnavi","2587963","Jalgaon","MH");
+INSERT INTO customer2 (cust_id,cname,adhar_number,city,state) VALUES(1003,"Kaustubh","1234457","Pune","MH"),(1004,"Ashish","2587964","Bhandara","MH");
+INSERT INTO customer2 (cust_id,cname,adhar_number,city,state) VALUES(1005,"Suraj","1234467","Belgaon","KN"),(1006,"Ruchita","2587966","Nagar","MH");
+
+INSERT INTO `order` (orderid,orderdate,orderamt,custid) VALUES (7000,"2019-05-21","700",1001),(7001,"2019-03-22","1000",1001),(7002,"2019-08-2","850",1001);
+INSERT INTO `order` (orderid,orderdate,orderamt,custid) VALUES (7003,"2019-01-3","900",1002),(7004,"2019-03-13","2500",1002),(7005,"2019-06-3","200",1002);
+INSERT INTO `order` (orderid,orderdate,orderamt,custid) VALUES (7006,"2019-01-3","400",1003),(7007,"2019-03-13","2100",1003),(7008,"2019-06-6","1500",1003);
+
+SELECT c.cust_id,ROUND(avg(o.orderamt),2)
+FROM customer2 c
+JOIN `order` o
+ON
+c.cust_id=o.custid
+GROUP BY
+c.cust_id;
+
+DELETE FROM customer2 WHERE cust_id IN (1004,1005,1006);
+
+SELECT c.cust_id,o.orderid,
+(SELECT o.orderamt FROM customer2 c2 JOIN
+`order` o ON c2.cust_id=o.custid 
+having o.orderamt>avg(orderamt)) AS "Average"
+FROM customer2 c
+JOIN `order` o
+ON o.custid=c.cust_id;
+WHERE o.orderamt>Average;
+
+CREATE TEMPORARY TABLE order2 LIKE `order`;
+
+SELECT c.cust_id,o.orderid,o.orderamt,(
+SELECT avg(o.orderamt) FROM customer2 c2
+ JOIN
+`order` o 
+ON 
+c2.cust_id=o.custid
+WHERE c2.cust_id=c1.cust_id 
+) Average
+FROM `order` o;
+DROP PROCEDURE IF EXISTS 
+DELIMITER //
+CREATE PROCEDURE get_more_average_status()
+BEGIN
+	DECLARE V_ORDERNO INTEGER(5);
+	DECLARE order_cur CURSOR FOR SELECT o.orderid,o.orderamt,
+	(SELECT c.cust_id,ROUND(avg(o.orderamt),2)
+	FROM customer2 c
+	JOIN `order` o
+	ON
+	c.cust_id=o.custid
+	GROUP BY
+	c.cust_id;
+	)
+	Average
+
+END
+
+SELECT c.cust_id,(SELECT AVG(o.orderamt) FROM `order` o JOIN customer2 c2 ON o.custid=c2.cust_id WHERE c2.cust_id=c.cust_id) "Average" FROM customer2 c
