@@ -1,0 +1,186 @@
+2. Write a procedure that displays the following
+information of all emp
+Emp_Name Department Name Designation Salary Status
+Note: - Status will be (Greater, Lesser or Equal) respective
+to average salary of their own
+department. Display an error message Emp table is ty if
+there is no matching
+record.
+
+drop procedure if exists salary_status;
+delimiter //
+create procedure salary_status()
+
+begin
+declare vempno int;
+declare vename varchar(20);
+declare vdname varchar(20);
+declare vavg decimal(7,2);
+declare vsal decimal(7,2);
+declare cend int default 0;
+declare pstatus varchar(10);
+declare vdeptno int;
+declare s_status cursor for 
+select
+e.ename, 
+e.sal,
+d.dname
+from EMP e INNER JOIN DEPT d
+ON e.deptno=d.deptno;
+
+declare continue handler for not found set cend=1;
+
+open s_status;
+label1:loop
+fetch s_status into vename,vsal,vdname;
+
+if cend=1 then
+leave label1;
+end if;
+
+select round(avg(sal),2) into vavg
+from EMP
+group by deptno
+having deptno=vdeptno;
+
+if vsal>vavg then
+set pstatus='Greater';
+elseif vsal<vavg then
+set pstatus='Lesser';
+else
+set pstatus='Equal';
+end if;
+select vename,vdname,vsal,pstatus;
+end loop;
+close s_status;
+end//
+delimiter ;
+
+***********************************************************************
+
+
+
+select round(avg(sal),2) into vavg
+from EMP
+group by deptno;
+
+
+select
+e.ename, 
+e.sal,
+d.dname,
+round(avg(e.sal),2)
+from EMP e INNER JOIN DEPT d
+ON e.deptno=d.deptno
+group by e.deptno,e.ename,e.sal;
+
+
+
+
+********************************************************************************
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+2. Write a procedure that displays the following
+information of all emp
+Emp_Name Department Name Designation Salary Status
+Note: - Status will be (Greater, Lesser or Equal) respective
+to average salary of their own
+department. Display an error message Emp table is ty if
+there is no matching
+record.
+
+
+drop procedure if exists salary_status;
+delimiter //
+create procedure salary_status()
+
+begin
+declare vempno int;
+declare vename varchar(20);
+declare vdname varchar(20);
+declare vavg decimal(7,2);
+declare vsal decimal(7,2);
+declare cend int default 0;
+declare pstatus varchar(10);
+declare vdeptno int;
+
+declare s_status cursor for 
+select
+e.ename, 
+e.sal,
+d.dname,
+e.deptno
+from EMP e INNER JOIN DEPT d
+ON e.deptno=d.deptno;
+
+declare continue handler for not found set cend=1;
+
+open s_status;
+label1:loop
+fetch s_status into vename,vsal,vdname,vdeptno;
+
+if cend=1 then
+leave label1;
+end if;
+
+select round(avg(sal),2) into vavg
+from EMP
+group by deptno
+having deptno=vdeptno;
+
+if vsal>vavg then
+set pstatus='Greater';
+elseif vsal<vavg then
+set pstatus='Lesser';
+else
+set pstatus='Equal';
+end if;
+select vename,vdname,vsal,pstatus;
+end loop;
+close s_status;
+end//
+delimiter ;
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+*************************************************************************
+
+
+5. 	Write a procedure that accept Emp_num and update
+	the salary and store the old salary
+	details in Emp _Back (Emp _Back has the same structure
+	without any
+	constraint) table.
+	Exp< 2 then no Update
+	Exp> 2 and < 5 then 20% of salary
+	Exp> 5 then 25% of salary
+
+
+drop table if exists emp_back;
+create table emp_back select* from emp_2;
+delimiter //
+
+create procedure update_sal(pempno int)
+begin
+declare vexp int default 0;
+declare vsal decimal(7,2);
+
+select floor((datediff(curdate(),hiredate))/365), sal into vexp,vsal
+from emp_2
+where empno=pempno;
+
+if vexp<2 then
+update emp_2 set sal=vsal
+where empno=pempno;
+elseif vexp<5 then
+update emp_2 set sal=vsal*1.2
+where empno=pempno;
+else
+update emp_2 set sal=vsal*1.5
+where empno=pempno;
+end if;
+
+end//
+delimiter ;
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+**************************************************************************
