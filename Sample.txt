@@ -34,42 +34,15 @@ c.cust_id;
 
 DELETE FROM customer2 WHERE cust_id IN (1004,1005,1006);
 
-SELECT c.cust_id,o.orderid,
-(SELECT o.orderamt FROM customer2 c2 JOIN
-`order` o ON c2.cust_id=o.custid 
-having o.orderamt>avg(orderamt)) AS "Average"
+
+CREATE TEMPORARY TABLE temp3 AS
+SELECT c.cust_id,(SELECT ROUND(AVG(o.orderamt),0) FROM `order` o JOIN customer2 c2 ON o.custid=c2.cust_id WHERE c2.cust_id=c.cust_id) "Average" FROM customer2 c;
+
+SELECT c.cust_id,c.cname,o.orderid,o.orderdate,o.orderamt,t.average
 FROM customer2 c
 JOIN `order` o
-ON o.custid=c.cust_id;
-WHERE o.orderamt>Average;
-
-CREATE TEMPORARY TABLE order2 LIKE `order`;
-
-SELECT c.cust_id,o.orderid,o.orderamt,(
-SELECT avg(o.orderamt) FROM customer2 c2
- JOIN
-`order` o 
-ON 
-c2.cust_id=o.custid
-WHERE c2.cust_id=c1.cust_id 
-) Average
-FROM `order` o;
-DROP PROCEDURE IF EXISTS 
-DELIMITER //
-CREATE PROCEDURE get_more_average_status()
-BEGIN
-	DECLARE V_ORDERNO INTEGER(5);
-	DECLARE order_cur CURSOR FOR SELECT o.orderid,o.orderamt,
-	(SELECT c.cust_id,ROUND(avg(o.orderamt),2)
-	FROM customer2 c
-	JOIN `order` o
-	ON
-	c.cust_id=o.custid
-	GROUP BY
-	c.cust_id;
-	)
-	Average
-
-END
-
-SELECT c.cust_id,(SELECT AVG(o.orderamt) FROM `order` o JOIN customer2 c2 ON o.custid=c2.cust_id WHERE c2.cust_id=c.cust_id) "Average" FROM customer2 c
+ON o.custid=c.cust_id
+JOIN temp3 t
+ON c.cust_id=t.cust_id
+WHERE
+o.orderamt>t.Average;
